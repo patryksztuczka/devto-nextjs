@@ -2,7 +2,12 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        header: "0 1px 1px 0 rgba(0, 0, 0, 0.1)",
+        shadow1: "0 0 0 1px rgba(23, 23, 23, 0.1);",
+      },
+    },
   },
   plugins: [],
 };
