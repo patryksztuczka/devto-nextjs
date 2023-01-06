@@ -6,6 +6,10 @@ export const userMenuOptions: IUserMenuOption[] = [
     route: "#",
   },
   {
+    label: "Create Post",
+    route: "/create-post",
+  },
+  {
     label: "Reading List",
     route: "#",
   },
