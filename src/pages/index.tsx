@@ -1,20 +1,37 @@
+import { useEffect, useState } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn } from "next-auth/react";
+import axios from "axios";
+
+import PostCard from "../components/PostCard/PostCard";
+import { Post } from "../types/Post";
 
 const Home: NextPage = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  const fetchPosts = async () => {
+    const { data } = await axios.get("/api/posts");
+    setPosts(data);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   return (
     <>
       <Head>
-        <title>Create T3 App</title>
+        <title>Dev.to Clone</title>
         <meta name="description" content="DEV.to Clone" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex h-[calc(100vh-56px)] flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <h1 className="text-center text-4xl font-bold text-white">
-          JULEŁ JEST NAJLEPSY 💖💖
-        </h1>
+      <main className="flex min-h-[calc(100vh-56px)] flex-col bg-gray-100">
+        <div className="flex w-full flex-col gap-2">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
       </main>
     </>
   );
