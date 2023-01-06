@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 const Home: NextPage = () => {
   return (
@@ -38,6 +39,9 @@ const Home: NextPage = () => {
                 to deploy it.
               </div>
             </Link>
+            <button type="button" className="bg-white" onClick={() => signIn()}>
+              Sign in
+            </button>
           </div>
         </div>
       </main>
