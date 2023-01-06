@@ -38,7 +38,7 @@ const UserDropdown = () => {
         />
       </div>
       {isOpen && (
-        <div className="absolute top-14 right-0 w-64 rounded bg-white p-2">
+        <div className="absolute top-14 right-0 w-64 rounded border bg-white p-2 shadow-sm">
           <div className="border-b pb-2">
             <Link href={`/user/${session?.user?.id}`}>
               <div className="cursor-pointer rounded p-2 font-semibold hover:bg-blue-200 hover:text-blue-700 hover:underline">
@@ -52,6 +52,7 @@ const UserDropdown = () => {
                 key={option.label}
                 href={option.route}
                 className="cursor-pointer rounded p-2 hover:bg-blue-200 hover:text-blue-700 hover:underline"
+                onClick={handleDropdownClose}
               >
                 {option.label}
               </Link>
