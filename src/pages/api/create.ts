@@ -5,20 +5,24 @@ import { prisma } from "../../server/db";
 const create = async (req: NextApiRequest, res: NextApiResponse) => {
   const { title, body, authorId, published } = req.body;
 
-  await prisma.post.create({
-    data: {
-      title,
-      body,
-      author: {
-        connect: {
-          id: authorId,
+  try {
+    const post = await prisma.post.create({
+      data: {
+        title,
+        body,
+        author: {
+          connect: {
+            id: authorId,
+          },
         },
+        published,
       },
-      published,
-    },
-  });
+    });
 
-  res.status(200);
+    res.status(200).send(post);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default create;

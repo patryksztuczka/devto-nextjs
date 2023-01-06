@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import axios from "axios";
 
 import CoverImageUpload from "../components/CoverImageUpload/CoverImageUpload";
@@ -15,6 +16,7 @@ const CreatePost = () => {
   } = useForm<ICreatePostFormValues>();
 
   const { data: session } = useSession();
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<ICreatePostFormValues> = async ({
     title,
@@ -31,6 +33,7 @@ const CreatePost = () => {
 
     try {
       await axios.post("/api/create", data);
+      router.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -38,16 +41,33 @@ const CreatePost = () => {
 
   return (
     <form
-      className="flex h-[calc(100vh-56px)] flex-col gap-4 pt-4"
+      className={"flex h-[calc(100vh-56px)] flex-col gap-4 pt-4"}
       onSubmit={handleSubmit(onSubmit)}
     >
+      {Object.values(errors).length > 0 && (
+        <div className="flex flex-col bg-red-100 p-4">
+          <h1 className="text-lg font-bold text-red-700">
+            Whoops, something went wrong:
+          </h1>
+          <ul>
+            {Object.values(errors).map((error) => (
+              <li className="text-red-700">{error.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="flex flex-col gap-4 px-4">
         <CoverImageUpload />
         <div>
           <Controller
             control={control}
             name="title"
-            rules={{ required: true }}
+            rules={{
+              required: {
+                value: true,
+                message: "Title is required",
+              },
+            }}
             render={({ field: { value, onChange } }) => (
               <input
                 type="text"
