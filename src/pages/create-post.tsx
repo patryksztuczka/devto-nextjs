@@ -85,7 +85,7 @@ const CreatePost = () => {
       </div>
       <div className="flex h-14 bg-gray-100" />
       <div className="flex h-full flex-col">
-        <div className="h-full px-4">
+        <div className="h-[calc(100%-56px)] px-4">
           <Controller
             control={control}
             name="body"
@@ -99,7 +99,7 @@ const CreatePost = () => {
             )}
           />
         </div>
-        <div className="flex h-14 items-center bg-gray-200 px-2">
+        <div className="fixed bottom-0 left-0 flex h-14 w-full items-center bg-gray-200 px-2">
           <SubmitButton text="Publish" />
         </div>
       </div>
