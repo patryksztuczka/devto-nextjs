@@ -30,7 +30,7 @@ const CreatePost = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/api/create", data);
+      await axios.post("/api/create", data);
     } catch (error) {
       console.log(error);
     }
