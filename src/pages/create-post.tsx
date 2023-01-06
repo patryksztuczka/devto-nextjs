@@ -51,7 +51,9 @@ const CreatePost = () => {
           </h1>
           <ul>
             {Object.values(errors).map((error) => (
-              <li className="text-red-700">{error.message}</li>
+              <li key={error.type} className="text-red-700">
+                {error.message}
+              </li>
             ))}
           </ul>
         </div>
