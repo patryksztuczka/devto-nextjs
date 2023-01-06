@@ -46,12 +46,14 @@ const UserDropdown = () => {
               </div>
             </Link>
           </div>
-          <div className="border-b py-2">
+          <div className="flex flex-col border-b py-2">
             {userMenuOptions.map((option) => (
-              <Link href={option.route}>
-                <div className="cursor-pointer rounded p-2 hover:bg-blue-200 hover:text-blue-700 hover:underline">
-                  {option.label}
-                </div>
+              <Link
+                key={option.label}
+                href={option.route}
+                className="cursor-pointer rounded p-2 hover:bg-blue-200 hover:text-blue-700 hover:underline"
+              >
+                {option.label}
               </Link>
             ))}
           </div>
