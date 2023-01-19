@@ -40,7 +40,10 @@ const UserDropdown = () => {
       {isOpen && (
         <div className="absolute top-14 right-0 w-64 rounded border bg-white p-2 shadow-sm">
           <div className="border-b pb-2">
-            <Link href={`/user/${session?.user?.id}`}>
+            <Link
+              href={`/user/${session?.user?.id}`}
+              onClick={handleDropdownClose}
+            >
               <div className="cursor-pointer rounded p-2 font-semibold hover:bg-blue-200 hover:text-blue-700 hover:underline">
                 {session?.user?.name}
               </div>
