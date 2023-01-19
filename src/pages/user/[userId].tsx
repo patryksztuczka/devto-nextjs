@@ -41,8 +41,8 @@ export async function getStaticProps({ params }: any) {
   }
 }
 
-const ProfilePage = ({ user }: any) => {
-  return <div>{`Profile page of ${user.name}`}</div>;
+const ProfilePage = ({ user }: { user: User }) => {
+  return <div>{`Profile page of ${user?.name}`}</div>;
 };
 
 export default ProfilePage;
