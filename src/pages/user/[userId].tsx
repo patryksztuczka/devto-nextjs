@@ -78,7 +78,7 @@ const ProfilePage = ({ user, posts }: { user: User; posts: Post[] }) => {
           </div>
           <div className="flex justify-end">
             <div>
-              {session.data?.user?.id === user.id ? (
+              {session.data?.user?.id === user?.id ? (
                 <SubmitButton text="Edit Profile" />
               ) : (
                 <SubmitButton text="Follow" />
