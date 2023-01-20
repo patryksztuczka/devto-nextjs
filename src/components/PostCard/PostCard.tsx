@@ -15,7 +15,7 @@ const PostCard = ({ post }: IPostCardProps) => {
   return (
     <div className="flex w-full flex-col gap-2 bg-white p-4 shadow">
       <div className="flex items-center gap-2">
-        <Link href={`/${id}`}>
+        <Link href={`/user/${id}`}>
           <Image
             src={image || profileImagePlaceholder}
             alt="Profile picture"
@@ -25,7 +25,7 @@ const PostCard = ({ post }: IPostCardProps) => {
           />
         </Link>
         <div className="flex flex-col">
-          <Link href={`/${id}`}>
+          <Link href={`/user/${id}`}>
             <h3 className="text-sm font-medium text-gray-700 hover:text-black">
               {name}
             </h3>

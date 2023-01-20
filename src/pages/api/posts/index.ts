@@ -1,6 +1,6 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 
-import { prisma } from "../../server/db";
+import { prisma } from "../../../server/db";
 
 const posts = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
