@@ -12,7 +12,6 @@ const Home: NextPage = () => {
   const fetchPosts = async () => {
     const { data } = await axios.get("/api/posts");
     setPosts(data);
-    console.log(data);
   };
 
   useEffect(() => {
