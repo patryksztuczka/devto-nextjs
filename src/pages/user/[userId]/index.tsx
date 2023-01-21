@@ -2,12 +2,12 @@ import React from "react";
 import Image from "next/image";
 import { User } from "@prisma/client";
 
-import { prisma } from "../../server/db";
-import profileImagePlaceholder from "../../assets/images/profile-image-placeholder.png";
-import SubmitButton from "../../components/SubmitButton/SubmitButton";
-import MailIcon from "../../assets/icons/MailIcon";
-import PostCard from "../../components/PostCard/PostCard";
-import { Post } from "../../types/Post";
+import { prisma } from "../../../server/db";
+import profileImagePlaceholder from "../../../assets/images/profile-image-placeholder.png";
+import SubmitButton from "../../../components/SubmitButton/SubmitButton";
+import MailIcon from "../../../assets/icons/MailIcon";
+import PostCard from "../../../components/PostCard/PostCard";
+import { Post } from "../../../types/Post";
 import { useSession } from "next-auth/react";
 
 export async function getStaticPaths() {

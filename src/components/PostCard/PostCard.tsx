@@ -34,9 +34,11 @@ const PostCard = ({ post }: IPostCardProps) => {
         </div>
       </div>
       <main>
-        <h1 className="w-fit cursor-pointer text-lg font-bold hover:text-blue-800">
-          {title}
-        </h1>
+        <Link href={`/user/${id}/${post.id}`}>
+          <h1 className="w-fit cursor-pointer text-lg font-bold hover:text-blue-800">
+            {title}
+          </h1>
+        </Link>
       </main>
       <div className="flex justify-between gap-2">
         <div className="flex gap-2">
