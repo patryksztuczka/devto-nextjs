@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { format } from "date-fns";
 
 import { prisma } from "../../../server/db";
 import { Post } from "../../../types/Post";
@@ -69,10 +68,7 @@ const PostPage = ({ post }: { post: Post }) => {
         />
         <div className=" flex flex-col gap-1">
           <h3 className="font-bold">{post?.author?.name}</h3>
-          <span className="text-xs text-gray-500">{`Posted on ${format(
-            post?.createdAt,
-            "dd MMMM yyyy"
-          )}`}</span>
+          <span className="text-xs text-gray-500">{`Posted on ${post?.createdAt.toString()}`}</span>
         </div>
       </div>
       <main className="flex flex-col gap-4">
