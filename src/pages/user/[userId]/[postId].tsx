@@ -70,14 +70,14 @@ const PostPage = ({ post }: { post: Post }) => {
         <div className=" flex flex-col gap-1">
           <h3 className="font-bold">{post?.author?.name}</h3>
           <span className="text-xs text-gray-500">{`Posted on ${format(
-            post.createdAt,
+            post?.createdAt,
             "dd MMMM yyyy"
           )}`}</span>
         </div>
       </div>
       <main className="flex flex-col gap-4">
-        <h1 className="text-3xl font-bold">{post.title}</h1>
-        <p className="whitespace-pre-line text-lg">{post.body}</p>
+        <h1 className="text-3xl font-bold">{post?.title}</h1>
+        <p className="whitespace-pre-line text-lg">{post?.body}</p>
       </main>
       <div className="fixed bottom-0 left-0 flex h-14 w-screen items-center justify-around rounded-md shadow-top">
         <div className="h-6 w-6">
