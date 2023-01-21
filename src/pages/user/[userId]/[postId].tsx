@@ -61,14 +61,14 @@ const PostPage = ({ post }: { post: Post }) => {
     <div className="relative flex flex-col gap-6 p-3">
       <div className="flex items-center gap-3">
         <Image
-          src={post.author?.image || profileImagePlaceholder}
+          src={post?.author?.image || profileImagePlaceholder}
           width={40}
           height={40}
           alt="profile picture"
           className="rounded-full"
         />
         <div className=" flex flex-col gap-1">
-          <h3 className="font-bold">{post.author?.name}</h3>
+          <h3 className="font-bold">{post?.author?.name}</h3>
           <span className="text-xs text-gray-500">{`Posted on ${format(
             post.createdAt,
             "dd MMMM yyyy"
