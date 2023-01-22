@@ -11,7 +11,7 @@ export const userMenuOptions: IUserMenuOption[] = [
   },
   {
     label: "Reading List",
-    route: "#",
+    route: "/reading-list",
   },
   {
     label: "Settings",

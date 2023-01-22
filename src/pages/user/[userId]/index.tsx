@@ -45,6 +45,7 @@ export async function getStaticProps({ params }: any) {
       },
       include: {
         author: true,
+        bookmarks: true,
       },
     });
 

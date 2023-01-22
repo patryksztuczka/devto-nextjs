@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import axios from "axios";
 
 import PostCard from "../components/PostCard/PostCard";
-import { Post } from "../types/Post";
+import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
+import { getPosts } from "../redux/thunks/postThunk";
 
 const Home: NextPage = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const dispatch = useAppDispatch();
 
-  const fetchPosts = async () => {
-    const { data } = await axios.get("/api/posts");
-    setPosts(data);
-  };
+  const posts = useAppSelector((state) => state.post.posts);
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    dispatch(getPosts());
+  }, [dispatch]);
 
   return (
     <>
@@ -27,7 +24,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-[calc(100vh-56px)] flex-col bg-gray-100">
         <div className="flex w-full flex-col gap-2">
-          {posts.map((post) => (
+          {posts?.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

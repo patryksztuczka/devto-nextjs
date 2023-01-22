@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 import { prisma } from "../../../server/db";
 import { Post } from "../../../types/Post";
@@ -7,6 +8,11 @@ import profileImagePlaceholder from "../../../assets/images/profile-image-placeh
 import HeartIcon from "../../../assets/icons/HeartIcon";
 import CommentIcon from "../../../assets/icons/CommentIcon";
 import BookmarkIcon from "../../../assets/icons/BookmarkIcon";
+import CheckedBookmarkIcon from "../../../assets/icons/CheckedBookmarkIcon";
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { PostFollower } from "@prisma/client";
+import { bookmarkPost, unbookmarkPost } from "../../../redux/thunks/postThunk";
+import { setPost } from "../../../redux/features/postSlice";
 
 export async function getStaticPaths() {
   try {
@@ -42,12 +48,25 @@ export async function getStaticProps({ params }: any) {
       },
       include: {
         author: true,
+        bookmarks: true,
+      },
+    });
+
+    const bookmarksCount = await prisma.postFollower.aggregate({
+      _count: {
+        userId: true,
+      },
+      where: {
+        postId: {
+          equals: params.postId,
+        },
       },
     });
 
     return {
       props: {
         post,
+        bookmarksCount,
       },
     };
   } catch (error) {
@@ -55,7 +74,43 @@ export async function getStaticProps({ params }: any) {
   }
 }
 
-const PostPage = ({ post }: { post: Post }) => {
+const PostPage = ({
+  post,
+  bookmarksCount,
+}: {
+  post: Post;
+  bookmarksCount: any;
+}) => {
+  const dispatch = useAppDispatch();
+  const { data } = useSession();
+
+  const bookmarks = useAppSelector((state) => state.post.post?.bookmarks);
+  const reactionsNumber = useAppSelector(
+    (state) => state.post.currentPostReactions
+  );
+
+  const handleBookmark = () => {
+    let postFollower: PostFollower;
+    const bookmark = bookmarks?.find(
+      (bookmark) => bookmark.userId === data?.user?.id
+    );
+
+    if (bookmark) {
+      dispatch(unbookmarkPost(bookmark));
+    } else {
+      postFollower = {
+        userId: data?.user?.id as string,
+        postId: post.id,
+      };
+
+      dispatch(bookmarkPost(postFollower));
+    }
+  };
+
+  useEffect(() => {
+    dispatch(setPost({ post, bookmarksCount: bookmarksCount._count.userId }));
+  }, []);
+
   return (
     <div className="relative flex flex-col gap-6 p-3">
       <div className="flex items-center gap-3">
@@ -82,8 +137,17 @@ const PostPage = ({ post }: { post: Post }) => {
         <div className="h-6 w-6">
           <CommentIcon />
         </div>
-        <div className="h-5 w-5">
-          <BookmarkIcon />
+        <div className="flex gap-3" onClick={handleBookmark}>
+          <div className="h-5 w-5">
+            {bookmarks?.find(
+              (bookmark) => bookmark.userId === data?.user?.id
+            ) ? (
+              <CheckedBookmarkIcon />
+            ) : (
+              <BookmarkIcon />
+            )}
+          </div>
+          <span>{reactionsNumber}</span>
         </div>
       </div>
     </div>

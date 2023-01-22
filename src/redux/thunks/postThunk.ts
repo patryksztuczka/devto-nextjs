@@ -1,0 +1,68 @@
+import { PostFollower } from "@prisma/client";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+import { Post } from "../../types/Post";
+
+export const getPosts = createAsyncThunk("post/getPosts", async () => {
+  try {
+    const { data } = await axios.get("/api/posts");
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+export const getPost = createAsyncThunk(
+  "post/getPost",
+  async (postId: string) => {
+    try {
+      const { data } = await axios.get(`/api/posts/${postId}`);
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const bookmarkPost = createAsyncThunk(
+  "post/bookmarkPost",
+  async (postFollower: PostFollower) => {
+    try {
+      const { data } = await axios.post("/api/posts/bookmark", postFollower);
+
+      return data as PostFollower;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const unbookmarkPost = createAsyncThunk(
+  "post/unbookmarkPost",
+  async (postFollower: PostFollower) => {
+    try {
+      const { data } = await axios.post("/api/posts/unbookmark", postFollower);
+
+      return data as PostFollower;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// export const updatePost = createAsyncThunk(
+//   "post/updatePost",
+//   async (post: Post) => {
+//     try {
+//       const { data } = await axios.patch("/api/posts/update", post);
+
+//       console.log(data);
+//       return data;
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+// );
