@@ -2,11 +2,11 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 
 import { prisma } from "../../../server/db";
 
-const posts = async (req: NextApiRequest, res: NextApiResponse) => {
+const post = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const posts = await prisma.post.findMany({
+    const post = await prisma.post.findFirst({
       where: {
-        published: true,
+        id: req.query.postId as string,
       },
       include: {
         author: true,
@@ -14,10 +14,10 @@ const posts = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    res.status(200).json(posts);
+    res.status(200).json(post);
   } catch (error) {
     console.log(error);
   }
 };
 
-export default posts;
+export default post;
