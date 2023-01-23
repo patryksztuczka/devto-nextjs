@@ -12,6 +12,7 @@ import {
 const initialState: IPostSliceState = {
   posts: undefined,
   post: undefined,
+  postFollowers: undefined,
   postFollowersCount: undefined,
   getPostsStatus: null,
   getPostStatus: null,
@@ -59,7 +60,7 @@ export const postSlice = createSlice({
         state.post.id === payload.postId &&
         state.postFollowersCount !== undefined
       ) {
-        state.post.bookmarks = [...(state.post.bookmarks || []), payload];
+        state.postFollowers = [...(state.postFollowers || []), payload];
         state.postFollowersCount = state.postFollowersCount + 1;
       }
 
@@ -83,7 +84,7 @@ export const postSlice = createSlice({
         state.post.id === payload.postId &&
         state.postFollowersCount !== undefined
       ) {
-        state.post.bookmarks = state.post.bookmarks?.filter(
+        state.postFollowers = state.post.bookmarks?.filter(
           (bookmark) => bookmark.postId !== payload.postId
         );
         state.postFollowersCount = state.postFollowersCount - 1;
@@ -109,7 +110,8 @@ export const postSlice = createSlice({
     });
     builder.addCase(getPostFollowersCount.fulfilled, (state, action) => {
       state.getPostFollowersCountStatus = "success";
-      state.postFollowersCount = action.payload;
+      state.postFollowers = action.payload;
+      state.postFollowersCount = action.payload?.length;
     });
     builder.addCase(getPostFollowersCount.rejected, (state) => {
       state.getPostFollowersCountStatus = "failed";
