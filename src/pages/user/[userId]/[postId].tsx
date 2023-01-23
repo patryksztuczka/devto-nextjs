@@ -75,8 +75,6 @@ const PostPage = ({ post }: { post: Post }) => {
   );
   const bookmarks = useAppSelector((state) => state.post.post?.bookmarks);
 
-  console.log(bookmarks);
-
   const handleBookmark = () => {
     let postFollower: PostFollower;
     const bookmark = bookmarks?.find(
