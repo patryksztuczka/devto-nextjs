@@ -61,7 +61,7 @@ export const getPostFollowersCount = createAsyncThunk(
         `/api/posts-followers/followers-count/${postId}`
       );
 
-      return data as number;
+      return data as PostFollower[];
     } catch (error) {
       console.log(error);
     }

@@ -52,7 +52,6 @@ export async function getStaticProps({ params }: any) {
       },
       include: {
         author: true,
-        bookmarks: true,
       },
     });
 
@@ -73,7 +72,7 @@ const PostPage = ({ post }: { post: Post }) => {
   const followersCount = useAppSelector(
     (state) => state.post.postFollowersCount
   );
-  const bookmarks = useAppSelector((state) => state.post.post?.bookmarks);
+  const bookmarks = useAppSelector((state) => state.post.postFollowers);
 
   const handleBookmark = () => {
     let postFollower: PostFollower;
