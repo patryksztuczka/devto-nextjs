@@ -4,16 +4,18 @@ import { IPostSliceState } from "../../types/IPostSliceState";
 import {
   bookmarkPost,
   getPost,
+  getPostFollowersCount,
   getPosts,
   unbookmarkPost,
 } from "../thunks/postThunk";
 
 const initialState: IPostSliceState = {
   posts: undefined,
-  post: null,
-  currentPostReactions: undefined,
+  post: undefined,
+  postFollowersCount: undefined,
   getPostsStatus: null,
   getPostStatus: null,
+  getPostFollowersCountStatus: null,
 };
 
 export const postSlice = createSlice({
@@ -21,10 +23,7 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     setPost: (state, { payload }) => {
-      state.post = payload.post;
-      state.currentPostReactions = payload.bookmarksCount;
-      console.log("setPost", state.post);
-      console.log("setPost", state.currentPostReactions);
+      state.post = payload;
     },
   },
   extraReducers: (builder) => {
@@ -58,10 +57,10 @@ export const postSlice = createSlice({
       if (
         state.post &&
         state.post.id === payload.postId &&
-        state.currentPostReactions !== undefined
+        state.postFollowersCount !== undefined
       ) {
         state.post.bookmarks = [...(state.post.bookmarks || []), payload];
-        state.currentPostReactions = state.currentPostReactions + 1;
+        state.postFollowersCount = state.postFollowersCount + 1;
       }
 
       state.posts = state.posts?.map((post) => {
@@ -82,12 +81,12 @@ export const postSlice = createSlice({
       if (
         state.post &&
         state.post.id === payload.postId &&
-        state.currentPostReactions !== undefined
+        state.postFollowersCount !== undefined
       ) {
         state.post.bookmarks = state.post.bookmarks?.filter(
           (bookmark) => bookmark.postId !== payload.postId
         );
-        state.currentPostReactions = state.currentPostReactions - 1;
+        state.postFollowersCount = state.postFollowersCount - 1;
       }
 
       state.posts = state.posts?.map((post) => {
@@ -102,6 +101,18 @@ export const postSlice = createSlice({
           return post;
         }
       });
+    });
+
+    // get post followers count
+    builder.addCase(getPostFollowersCount.pending, (state) => {
+      state.getPostFollowersCountStatus = "loading";
+    });
+    builder.addCase(getPostFollowersCount.fulfilled, (state, action) => {
+      state.getPostFollowersCountStatus = "success";
+      state.postFollowersCount = action.payload;
+    });
+    builder.addCase(getPostFollowersCount.rejected, (state) => {
+      state.getPostFollowersCountStatus = "failed";
     });
   },
 });

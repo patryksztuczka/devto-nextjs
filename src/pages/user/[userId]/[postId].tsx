@@ -11,7 +11,11 @@ import BookmarkIcon from "../../../assets/icons/BookmarkIcon";
 import CheckedBookmarkIcon from "../../../assets/icons/CheckedBookmarkIcon";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { PostFollower } from "@prisma/client";
-import { bookmarkPost, unbookmarkPost } from "../../../redux/thunks/postThunk";
+import {
+  bookmarkPost,
+  getPostFollowersCount,
+  unbookmarkPost,
+} from "../../../redux/thunks/postThunk";
 import { setPost } from "../../../redux/features/postSlice";
 
 export async function getStaticPaths() {
@@ -52,21 +56,9 @@ export async function getStaticProps({ params }: any) {
       },
     });
 
-    const bookmarksCount = await prisma.postFollower.aggregate({
-      _count: {
-        userId: true,
-      },
-      where: {
-        postId: {
-          equals: params.postId,
-        },
-      },
-    });
-
     return {
       props: {
         post,
-        bookmarksCount,
       },
     };
   } catch (error) {
@@ -74,20 +66,16 @@ export async function getStaticProps({ params }: any) {
   }
 }
 
-const PostPage = ({
-  post,
-  bookmarksCount,
-}: {
-  post: Post;
-  bookmarksCount: any;
-}) => {
+const PostPage = ({ post }: { post: Post }) => {
   const dispatch = useAppDispatch();
   const { data } = useSession();
 
-  const bookmarks = useAppSelector((state) => state.post.post?.bookmarks);
-  const reactionsNumber = useAppSelector(
-    (state) => state.post.currentPostReactions
+  const followersCount = useAppSelector(
+    (state) => state.post.postFollowersCount
   );
+  const bookmarks = useAppSelector((state) => state.post.post?.bookmarks);
+
+  console.log(bookmarks);
 
   const handleBookmark = () => {
     let postFollower: PostFollower;
@@ -108,7 +96,8 @@ const PostPage = ({
   };
 
   useEffect(() => {
-    dispatch(setPost({ post, bookmarksCount: bookmarksCount._count.userId }));
+    dispatch(setPost(post));
+    dispatch(getPostFollowersCount(post.id));
   }, []);
 
   return (
@@ -147,7 +136,7 @@ const PostPage = ({
               <BookmarkIcon />
             )}
           </div>
-          <span>{reactionsNumber}</span>
+          <span>{followersCount}</span>
         </div>
       </div>
     </div>

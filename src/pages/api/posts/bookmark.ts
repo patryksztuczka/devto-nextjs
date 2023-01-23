@@ -3,7 +3,6 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../server/db";
 
 const bookmark = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("bookmark post", req.body);
   try {
     const bookmark = await prisma.postFollower.create({
       data: {

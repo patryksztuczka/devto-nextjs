@@ -53,16 +53,17 @@ export const unbookmarkPost = createAsyncThunk(
   }
 );
 
-// export const updatePost = createAsyncThunk(
-//   "post/updatePost",
-//   async (post: Post) => {
-//     try {
-//       const { data } = await axios.patch("/api/posts/update", post);
+export const getPostFollowersCount = createAsyncThunk(
+  "post/getPostFollowersCount",
+  async (postId: string) => {
+    try {
+      const { data } = await axios.get(
+        `/api/posts-followers/followers-count/${postId}`
+      );
 
-//       console.log(data);
-//       return data;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-// );
+      return data as number;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);

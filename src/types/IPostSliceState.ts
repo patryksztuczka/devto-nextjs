@@ -3,8 +3,9 @@ import { TStatus } from "./TStatus";
 
 export interface IPostSliceState {
   posts: Post[] | undefined;
-  post: Post | null;
-  currentPostReactions: number | undefined;
+  post: Post | undefined;
+  postFollowersCount: number | undefined;
   getPostsStatus: TStatus;
   getPostStatus: TStatus;
+  getPostFollowersCountStatus: TStatus;
 }
