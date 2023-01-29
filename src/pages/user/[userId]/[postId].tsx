@@ -17,6 +17,7 @@ import {
   unbookmarkPost,
 } from "../../../redux/thunks/postThunk";
 import { setPost } from "../../../redux/features/postSlice";
+import Loader from "../../../components/Loader/Loader";
 
 export async function getStaticPaths() {
   try {
@@ -73,6 +74,11 @@ const PostPage = ({ post }: { post: Post }) => {
     (state) => state.post.postFollowersCount
   );
   const bookmarks = useAppSelector((state) => state.post.postFollowers);
+  const getPostFollowersCountStatus = useAppSelector(
+    (state) => state.post.getPostFollowersCountStatus
+  );
+
+  const isLoading = getPostFollowersCountStatus === "loading";
 
   const handleBookmark = () => {
     let postFollower: PostFollower;
@@ -117,24 +123,30 @@ const PostPage = ({ post }: { post: Post }) => {
         <p className="whitespace-pre-line text-lg">{post?.body}</p>
       </main>
       <div className="fixed bottom-0 left-0 flex h-14 w-screen items-center justify-around rounded-md shadow-top">
-        <div className="h-6 w-6">
-          <HeartIcon />
-        </div>
-        <div className="h-6 w-6">
-          <CommentIcon />
-        </div>
-        <div className="flex gap-3" onClick={handleBookmark}>
-          <div className="h-5 w-5">
-            {bookmarks?.find(
-              (bookmark) => bookmark.userId === data?.user?.id
-            ) ? (
-              <CheckedBookmarkIcon />
-            ) : (
-              <BookmarkIcon />
-            )}
-          </div>
-          <span>{followersCount}</span>
-        </div>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="h-6 w-6">
+              <HeartIcon />
+            </div>
+            <div className="h-6 w-6">
+              <CommentIcon />
+            </div>
+            <div className="flex gap-3" onClick={handleBookmark}>
+              <div className="h-5 w-5">
+                {bookmarks?.find(
+                  (bookmark) => bookmark.userId === data?.user?.id
+                ) ? (
+                  <CheckedBookmarkIcon />
+                ) : (
+                  <BookmarkIcon />
+                )}
+              </div>
+              <span>{followersCount}</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

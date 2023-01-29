@@ -13,7 +13,7 @@ import { useAppDispatch } from "../../hooks/useRedux";
 import { bookmarkPost, unbookmarkPost } from "../../redux/thunks/postThunk";
 import { PostFollower } from "@prisma/client";
 
-const PostCard = ({ post }: IPostCardProps) => {
+const PostCard = ({ post, lastPost }: IPostCardProps) => {
   const dispatch = useAppDispatch();
   const { data } = useSession();
 
@@ -38,7 +38,10 @@ const PostCard = ({ post }: IPostCardProps) => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-2 bg-white p-4 shadow">
+    <div
+      ref={lastPost}
+      className="flex w-full flex-col gap-2 bg-white p-4 shadow"
+    >
       <div className="flex items-center gap-2">
         <Link href={`/user/${author?.id}`}>
           <Image
@@ -55,7 +58,7 @@ const PostCard = ({ post }: IPostCardProps) => {
               {author?.name}
             </h3>
           </Link>
-          <p className="text-xs text-gray-700">{createdAt.toString()}</p>
+          <p className="text-xs text-gray-700">{createdAt?.toString()}</p>
         </div>
       </div>
       <main>
@@ -82,15 +85,17 @@ const PostCard = ({ post }: IPostCardProps) => {
           className=" cursor-pointer rounded p-2 hover:bg-blue-200"
           onClick={handleBookmark}
         >
-          <div className="h-3 w-3">
-            {bookmarks?.find(
-              (bookmark) => bookmark.userId === data?.user?.id
-            ) ? (
-              <CheckedBookmarkIcon />
-            ) : (
-              <BookmarkIcon />
-            )}
-          </div>
+          {data?.user && (
+            <div className="h-3 w-3">
+              {bookmarks?.find(
+                (bookmark) => bookmark.userId === data?.user?.id
+              ) ? (
+                <CheckedBookmarkIcon />
+              ) : (
+                <BookmarkIcon />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

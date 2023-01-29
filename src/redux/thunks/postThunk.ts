@@ -2,17 +2,18 @@ import { PostFollower } from "@prisma/client";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import { Post } from "../../types/Post";
+export const getPosts = createAsyncThunk(
+  "post/getPosts",
+  async (skip: number) => {
+    try {
+      const { data } = await axios.get("/api/posts?skip=" + skip);
 
-export const getPosts = createAsyncThunk("post/getPosts", async () => {
-  try {
-    const { data } = await axios.get("/api/posts");
-
-    return data;
-  } catch (error) {
-    console.log(error);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 export const getPost = createAsyncThunk(
   "post/getPost",

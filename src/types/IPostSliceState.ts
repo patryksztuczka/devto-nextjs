@@ -11,4 +11,6 @@ export interface IPostSliceState {
   getPostsStatus: TStatus;
   getPostStatus: TStatus;
   getPostFollowersCountStatus: TStatus;
+  page: number;
+  isMorePosts: boolean;
 }
