@@ -17,6 +17,8 @@ const initialState: IPostSliceState = {
   getPostsStatus: null,
   getPostStatus: null,
   getPostFollowersCountStatus: null,
+  page: 0,
+  isMorePosts: false,
 };
 
 export const postSlice = createSlice({
@@ -26,6 +28,9 @@ export const postSlice = createSlice({
     setPost: (state, { payload }) => {
       state.post = payload;
     },
+    setPage: (state, { payload }) => {
+      state.page = payload;
+    },
   },
   extraReducers: (builder) => {
     // get posts
@@ -34,7 +39,18 @@ export const postSlice = createSlice({
     });
     builder.addCase(getPosts.fulfilled, (state, action) => {
       state.getPostsStatus = "success";
-      state.posts = action.payload;
+      if (!action.payload) return;
+
+      if (state.page === 0) {
+        state.posts = action.payload.posts.value;
+      } else if (state.posts !== undefined && state.page > 0) {
+        state.posts = [...state.posts, ...action.payload.posts.value];
+      }
+
+      if (action.payload.total.value._count.published && state.posts) {
+        state.isMorePosts =
+          action.payload.total.value._count.published > state.posts.length;
+      }
     });
     builder.addCase(getPosts.rejected, (state) => {
       state.getPostsStatus = "failed";
@@ -119,6 +135,6 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPost } = postSlice.actions;
+export const { setPost, setPage } = postSlice.actions;
 
 export default postSlice.reducer;
