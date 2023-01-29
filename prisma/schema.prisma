@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -27,6 +28,8 @@ model Post {
     author    User      @relation(fields: [authorId], references: [id])
     authorId  String
     bookmarks PostFollower[]
+
+    @@fulltext([title])
 }
 
 model PostFollower {

@@ -3,7 +3,6 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../server/db";
 
 const posts = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("BODY", req.query);
   try {
     const getPosts = async () => {
       return await prisma.post.findMany({

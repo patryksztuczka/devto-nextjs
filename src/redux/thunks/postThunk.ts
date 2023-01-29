@@ -68,3 +68,16 @@ export const getPostFollowersCount = createAsyncThunk(
     }
   }
 );
+
+export const searchPosts = createAsyncThunk(
+  "post/searchPosts",
+  async (text: string) => {
+    try {
+      const { data } = await axios.get("/api/posts/search?title=" + text);
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
