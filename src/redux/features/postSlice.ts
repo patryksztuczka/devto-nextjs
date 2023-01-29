@@ -7,16 +7,19 @@ import {
   getPostFollowersCount,
   getPosts,
   unbookmarkPost,
+  searchPosts,
 } from "../thunks/postThunk";
 
 const initialState: IPostSliceState = {
   posts: undefined,
+  searchedPosts: undefined,
   post: undefined,
   postFollowers: undefined,
   postFollowersCount: undefined,
   getPostsStatus: null,
   getPostStatus: null,
   getPostFollowersCountStatus: null,
+  searchPostsStatus: null,
   page: 0,
   isMorePosts: false,
 };
@@ -131,6 +134,20 @@ export const postSlice = createSlice({
     });
     builder.addCase(getPostFollowersCount.rejected, (state) => {
       state.getPostFollowersCountStatus = "failed";
+    });
+
+    // search posts
+    builder.addCase(searchPosts.pending, (state) => {
+      state.searchPostsStatus = "loading";
+    });
+    builder.addCase(searchPosts.fulfilled, (state, action) => {
+      state.searchPostsStatus = "success";
+      state.searchedPosts = action.payload;
+
+      console.log(action.payload);
+    });
+    builder.addCase(searchPosts.rejected, (state) => {
+      state.searchPostsStatus = "failed";
     });
   },
 });
