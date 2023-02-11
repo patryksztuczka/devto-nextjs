@@ -171,7 +171,7 @@ const PostPage = ({ post }: { post: Post }) => {
           </>
         )}
       </div>
-      {data?.user?.id !== post.authorId && data?.user?.role !== "ADMIN" && (
+      {data?.user?.id !== post?.authorId && data?.user?.role !== "ADMIN" && (
         <div className="absolute top-0 left-0 z-0 flex h-[calc(100vh-56px)] w-screen items-center justify-center bg-red-200 opacity-95">
           <div className="z-10 mx-4 rounded bg-white text-center text-lg font-semibold">
             Post blocked by admin until content violating policy is removed
