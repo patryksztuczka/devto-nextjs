@@ -8,14 +8,19 @@ import {
   getPosts,
   unbookmarkPost,
   searchPosts,
+  getUserPosts,
+  blockPost,
+  unblockPost,
 } from "../thunks/postThunk";
 
 const initialState: IPostSliceState = {
   posts: undefined,
   searchedPosts: undefined,
   post: undefined,
+  userPosts: undefined,
   postFollowers: undefined,
   postFollowersCount: undefined,
+  getUserPostsStatus: null,
   getPostsStatus: null,
   getPostStatus: null,
   getPostFollowersCountStatus: null,
@@ -59,7 +64,19 @@ export const postSlice = createSlice({
       state.getPostsStatus = "failed";
     });
 
-    // get post by id
+    // get user posts
+    builder.addCase(getUserPosts.pending, (state) => {
+      state.getUserPostsStatus = "loading";
+    });
+    builder.addCase(getUserPosts.fulfilled, (state, action) => {
+      state.getUserPostsStatus = "success";
+      state.userPosts = action.payload;
+      console.log("userPosts", action.payload);
+    });
+    builder.addCase(getUserPosts.rejected, (state) => {
+      state.getUserPostsStatus = "failed";
+    });
+
     builder.addCase(getPost.pending, (state) => {
       state.getPostStatus = "loading";
     });
@@ -93,6 +110,17 @@ export const postSlice = createSlice({
           return post;
         }
       });
+
+      state.userPosts = state.userPosts?.map((post) => {
+        if (post.id === payload.postId) {
+          return {
+            ...post,
+            bookmarks: [...(post.bookmarks || []), payload],
+          };
+        } else {
+          return post;
+        }
+      });
     });
 
     // unbookmark post
@@ -110,6 +138,19 @@ export const postSlice = createSlice({
       }
 
       state.posts = state.posts?.map((post) => {
+        if (post.id === payload.postId) {
+          return {
+            ...post,
+            bookmarks: post.bookmarks?.filter(
+              (bookmark) => bookmark.postId !== payload.postId
+            ),
+          };
+        } else {
+          return post;
+        }
+      });
+
+      state.userPosts = state.userPosts?.map((post) => {
         if (post.id === payload.postId) {
           return {
             ...post,
@@ -148,6 +189,48 @@ export const postSlice = createSlice({
     });
     builder.addCase(searchPosts.rejected, (state) => {
       state.searchPostsStatus = "failed";
+    });
+
+    // block post
+    builder.addCase(blockPost.fulfilled, (state, { payload }) => {
+      if (!payload) return;
+
+      state.posts = state.posts?.filter((post) => post.id !== payload);
+
+      if (state.post && state.post.id === payload) {
+        state.post.blocked = true;
+      }
+
+      state.userPosts = state.userPosts?.map((post) => {
+        if (post.id === payload) {
+          return {
+            ...post,
+            blocked: true,
+          };
+        } else {
+          return post;
+        }
+      });
+    });
+
+    // unblock post
+    builder.addCase(unblockPost.fulfilled, (state, { payload }) => {
+      if (!payload) return;
+
+      if (state.post && state.post.id === payload) {
+        state.post.blocked = false;
+      }
+
+      state.userPosts = state.userPosts?.map((post) => {
+        if (post.id === payload) {
+          return {
+            ...post,
+            blocked: false,
+          };
+        } else {
+          return post;
+        }
+      });
     });
   },
 });

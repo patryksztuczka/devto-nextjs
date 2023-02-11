@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 import { prisma } from "../../../server/db";
 import { Post } from "../../../types/Post";
@@ -12,8 +13,10 @@ import CheckedBookmarkIcon from "../../../assets/icons/CheckedBookmarkIcon";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
 import { PostFollower } from "@prisma/client";
 import {
+  blockPost,
   bookmarkPost,
   getPostFollowersCount,
+  unblockPost,
   unbookmarkPost,
 } from "../../../redux/thunks/postThunk";
 import { setPost } from "../../../redux/features/postSlice";
@@ -77,6 +80,7 @@ const PostPage = ({ post }: { post: Post }) => {
   const getPostFollowersCountStatus = useAppSelector(
     (state) => state.post.getPostFollowersCountStatus
   );
+  const isBlocked = useAppSelector((state) => state.post.post?.blocked);
 
   const isLoading = getPostFollowersCountStatus === "loading";
 
@@ -98,6 +102,16 @@ const PostPage = ({ post }: { post: Post }) => {
     }
   };
 
+  const handleBlockPost = async () => {
+    // await axios.patch(`/api/posts/block`, { postId: post.id });
+    dispatch(blockPost(post.id));
+  };
+
+  const handleUnblockPost = async () => {
+    // await axios.patch(`/api/posts/unblock`, { postId: post.id });
+    dispatch(unblockPost(post.id));
+  };
+
   useEffect(() => {
     dispatch(setPost(post));
     dispatch(getPostFollowersCount(post.id));
@@ -117,12 +131,21 @@ const PostPage = ({ post }: { post: Post }) => {
           <h3 className="font-bold">{post?.author?.name}</h3>
           <span className="text-xs text-gray-500">{`Posted on ${post?.createdAt.toString()}`}</span>
         </div>
+        {data?.user?.role === "ADMIN" && (
+          <button
+            type="button"
+            className="rounded border bg-red-200 p-1 font-semibold"
+            onClick={isBlocked ? handleUnblockPost : handleBlockPost}
+          >
+            {isBlocked ? "Unblock post" : "Block post"}
+          </button>
+        )}
       </div>
-      <main className="flex flex-col gap-4">
+      <main className="mb-14 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">{post?.title}</h1>
         <p className="whitespace-pre-line text-lg">{post?.body}</p>
       </main>
-      <div className="fixed bottom-0 left-0 flex h-14 w-screen items-center justify-around rounded-md shadow-top">
+      <div className="fixed bottom-0 left-0 flex h-14 w-screen items-center justify-around rounded-md bg-white shadow-top">
         {isLoading ? (
           <Loader />
         ) : (
@@ -148,6 +171,13 @@ const PostPage = ({ post }: { post: Post }) => {
           </>
         )}
       </div>
+      {data?.user?.id !== post?.authorId && data?.user?.role !== "ADMIN" && (
+        <div className="absolute top-0 left-0 z-0 flex h-[calc(100vh-56px)] w-screen items-center justify-center bg-red-200 opacity-95">
+          <div className="z-10 mx-4 rounded bg-white text-center text-lg font-semibold">
+            Post blocked by admin until content violating policy is removed
+          </div>
+        </div>
+      )}
     </div>
   );
 };

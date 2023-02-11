@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { User } from "@prisma/client";
 
@@ -9,6 +9,9 @@ import MailIcon from "../../../assets/icons/MailIcon";
 import PostCard from "../../../components/PostCard/PostCard";
 import { Post } from "../../../types/Post";
 import { useSession } from "next-auth/react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/useRedux";
+import { getUserPosts } from "../../../redux/thunks/postThunk";
+import Loader from "../../../components/Loader/Loader";
 
 export async function getStaticPaths() {
   try {
@@ -37,22 +40,9 @@ export async function getStaticProps({ params }: any) {
       },
     });
 
-    const posts = await prisma.post.findMany({
-      where: {
-        authorId: {
-          equals: params.userId,
-        },
-      },
-      include: {
-        author: true,
-        bookmarks: true,
-      },
-    });
-
     return {
       props: {
         user,
-        posts,
       },
     };
   } catch (error) {
@@ -60,8 +50,21 @@ export async function getStaticProps({ params }: any) {
   }
 }
 
-const ProfilePage = ({ user, posts }: { user: User; posts: Post[] }) => {
+const ProfilePage = ({ user }: { user: User }) => {
   const session = useSession();
+  const dispatch = useAppDispatch();
+
+  const posts = useAppSelector((state) => state.post.userPosts);
+  const getUserPostsStatus = useAppSelector(
+    (state) => state.post.getUserPostsStatus
+  );
+
+  const isLoading = getUserPostsStatus === "loading";
+
+  useEffect(() => {
+    console.log("user", user);
+    dispatch(getUserPosts(user?.id));
+  }, [user?.id]);
 
   return (
     <div className="flex min-h-[calc(100vh-56px)] flex-col gap-4 bg-gray-100">
@@ -109,9 +112,13 @@ const ProfilePage = ({ user, posts }: { user: User; posts: Post[] }) => {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {posts?.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
+        {isLoading ? (
+          <div className="flex justify-center">
+            <Loader />
+          </div>
+        ) : (
+          posts?.map((post) => <PostCard key={post.id} post={post} />)
+        )}
       </div>
       <div className="flex flex-col gap-2 bg-white">
         <div className="flex w-screen flex-col">
