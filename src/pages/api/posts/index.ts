@@ -10,6 +10,7 @@ const posts = async (req: NextApiRequest, res: NextApiResponse) => {
         take: 10,
         where: {
           published: true,
+          blocked: false,
         },
         include: {
           author: true,
@@ -25,6 +26,7 @@ const posts = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         where: {
           published: true,
+          blocked: false,
         },
       });
     };

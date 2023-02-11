@@ -17,7 +17,7 @@ const PostCard = ({ post, lastPost }: IPostCardProps) => {
   const dispatch = useAppDispatch();
   const { data } = useSession();
 
-  const { title, author, createdAt, bookmarks } = post;
+  const { title, author, createdAt, bookmarks, blocked } = post;
 
   const handleBookmark = () => {
     let postFollower: PostFollower;
@@ -37,10 +37,19 @@ const PostCard = ({ post, lastPost }: IPostCardProps) => {
     }
   };
 
+  console.log(data?.user);
+
   return (
     <div
       ref={lastPost}
-      className="flex w-full flex-col gap-2 bg-white p-4 shadow"
+      className={`flex w-full flex-col gap-2 bg-white p-4 shadow ${
+        blocked && "bg-red-200"
+      } ${
+        data?.user?.id !== author?.id &&
+        post.blocked &&
+        data?.user?.role !== "ADMIN" &&
+        "pointer-events-none"
+      }`}
     >
       <div className="flex items-center gap-2">
         <Link href={`/user/${author?.id}`}>
@@ -64,7 +73,7 @@ const PostCard = ({ post, lastPost }: IPostCardProps) => {
       <main>
         <Link href={`/user/${author?.id}/${post.id}`}>
           <h1 className="w-fit cursor-pointer text-lg font-bold hover:text-blue-800">
-            {title}
+            {post.blocked ? "Post zablokowany" : title}
           </h1>
         </Link>
       </main>
