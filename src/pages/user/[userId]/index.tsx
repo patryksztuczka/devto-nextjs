@@ -63,8 +63,8 @@ const ProfilePage = ({ user }: { user: User }) => {
 
   useEffect(() => {
     console.log("user", user);
-    dispatch(getUserPosts(user.id));
-  }, [user.id]);
+    dispatch(getUserPosts(user?.id));
+  }, [user?.id]);
 
   return (
     <div className="flex min-h-[calc(100vh-56px)] flex-col gap-4 bg-gray-100">
